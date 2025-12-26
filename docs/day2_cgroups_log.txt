@@ -1,0 +1,9 @@
+=== Day 2 – CPU Limiting ===
+Scope created:
+0::/demo.slice/demo-shell.scope
+
+Applied CPU limit:
+echo "50000 100000" | sudo tee /sys/fs/cgroup/demo.slice/demo-shell.scope/cpu.max
+
+Stress test:
+stress --cpu 2 --timeout 20
