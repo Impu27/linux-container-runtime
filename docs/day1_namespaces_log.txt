@@ -1,0 +1,53 @@
+===Day 1 – Linux Namespace Isolation – Logs===
+Goal:
+Create a minimal "container-like" isolated shell using Linux PID + Mount namespaces
+(without Docker).
+
+Environment:
+• Host: VirtualBox VM – Ubuntu 22.04.5 LTS
+• Kernel: Linux 6.8.0-90-generic (x86_64)
+• Tools used: unshare, Python3 subprocess
+
+-----------------------------------------
+Commands Executed
+
+Enter namespace shell
+$ sudo unshare --pid --fork --mount bash
+
+Verify PID isolation
+$ echo $$
+1
+# -> PID 1 inside namespace → acts like init process
+
+View process list inside isolated shell
+$ ps -eo pid,cmd --no-headers | head -10
+# -> Only minimal processes are visible (unlike 100+ on host)
+
+-----------------------------------------
+Python Execution
+
+
+run_container.py:
+-----------------
+import subprocess
+print("Starting isolated namespace shell...")
+subprocess.run(["unshare", "--pid", "--fork", "--mount", "bash"])
+
+Execution:
+$ python3 run_container.py
+Starting isolated namespace shell...
+
+$ echo $$
+1
+# -> Again PID 1 confirms proper namespace isolation
+
+-----------------------------------------
+Final Result
+
+
+Namespaces successfully created:
+• PID namespace → isolated process tree
+• Mount namespace → shell launched with new filesystem context
+
+Outcome:
+Day-1 is SUCCESS – VM now supports namespace-based isolated execution similar to Docker internals.
