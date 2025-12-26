@@ -1,9 +1,59 @@
 === Day 2 – CPU Limiting ===
-Scope created:
+Goal:
+Apply CPU resource limits to an isolated shell using cgroups v2
+and verify throttling using stress and htop.
+
+Environment:
+• VM: Ubuntu 22.04.5 LTS (VirtualBox)
+• Kernel: Linux 6.8.0-90-generic (x86_64)
+• Cgroups mode: unified (cgroups v2)
+• Tools: systemd-run, stress, htop
+
+-----------------------------------------
+Step-by-Step Commands Executed
+
+Verified that cgroups v2 is present
+$ cat /sys/fs/cgroup/cgroup.controllers
+cpuset cpu io memory hugetlb pids rdma misc
+
+Entered isolated shell under its own cgroup slice
+$ sudo systemd-run --slice=demo.slice --unit=demo-shell --scope bash
+Running scope as unit: demo-shell.scope
+
+Verified that shell is inside demo.slice
+$ cat /proc/self/cgroup
 0::/demo.slice/demo-shell.scope
 
-Applied CPU limit:
-echo "50000 100000" | sudo tee /sys/fs/cgroup/demo.slice/demo-shell.scope/cpu.max
+Attempted to apply CPU limit → success only inside slice path
+$ cd /sys/fs/cgroup/demo.slice/demo-shell.scope/
+$ echo "50000 100000" | sudo tee cpu.max
+50000 100000
 
-Stress test:
-stress --cpu 2 --timeout 20
+Meaning:
+• CPU quota: 50,000 µs / 100ms period
+• ~50% of a single CPU core allowed
+
+-----------------------------------------
+Stress Test (inside demo-shell.scope)
+
+$ stress --cpu 2 --timeout 20
+stress: info: [3840] dispatching hogs: 2 cpu, 0 io, 0 vm, 0 hdd
+(… after 20 seconds …)
+stress: info: [3840] successful run completed in 19s
+
+Monitoring from another terminal
+$ htop
+Observed:
+• Two stress processes → PID 3840, 3841
+• CPU usage ~25–60% across core 0/1
+• Load average increased while capped
+
+-----------------------------------------
+Final Result
+
+Cgroup scope created → demo.slice
+CPU max quota applied successfully
+Stress CPU load was throttled and confirmed with htop
+
+Outcome:
+Day-2 SUCCESS — container-like CPU limits now enforced.
