@@ -1,4 +1,4 @@
-=== Day 2 – CPU Limiting ===
+=== Task 2 – CPU Limiting ===
 Goal:
 Apply CPU resource limits to an isolated shell using cgroups v2
 and verify throttling using stress and htop.
@@ -56,4 +56,4 @@ CPU max quota applied successfully
 Stress CPU load was throttled and confirmed with htop
 
 Outcome:
-Day-2 SUCCESS — container-like CPU limits now enforced.
+SUCCESS — container-like CPU limits now enforced.
