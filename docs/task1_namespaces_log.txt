@@ -1,4 +1,4 @@
-===Day 1 – Linux Namespace Isolation – Logs===
+===Task 1 – Linux Namespace Isolation – Logs===
 Goal:
 Create a minimal "container-like" isolated shell using Linux PID + Mount namespaces
 (without Docker).
