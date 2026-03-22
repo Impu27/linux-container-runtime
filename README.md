@@ -180,11 +180,6 @@ The project includes real execution data:
 
 ---
 
-##  Resume Highlight
-
-> Built a modular container runtime using Linux namespaces, cgroups, CPU affinity, and data-driven scheduling with simulated GPU allocation and CI/CD automation.
-
----
 
 ##  Future Improvements
 
