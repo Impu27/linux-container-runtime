@@ -1,0 +1,4 @@
+cpu: 2
+memory: 512M
+gpu: true
+command: stress --cpu 2
